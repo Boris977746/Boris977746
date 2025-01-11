@@ -1,36 +1,38 @@
+import telebot
 import uuid
 
-# Укажите параметры VPN-сервера
-SERVER_IP = "188.227.86.106"  # IP-адрес сервера
-SERVER_PORT = 443  # Используемый порт
-PUBLIC_KEY = "7132417386:AAEcrhVgsPV1ZX6CBvVZAKO7-cv1toBMKCM"  # Публичный ключ
-SNI = "google.com"  # SNI-домен
-SHORT_ID = "4c61c8b9920bb4b4"  # Краткий идентификатор (Short ID)
-PATH = "/"  # Путь подключения
+# Укажите API-ключ вашего бота
+BOT_TOKEN = "7132417386:AAEcrhVgsPV1ZX6CBvVZAKO7-cv1toBMKCM"
+bot = telebot.TeleBot(BOT_TOKEN)
 
-def generate_vless_link():
-    """Функция для генерации корректной VLESS ссылки"""
-    try:
-        user_uuid = str(uuid.uuid4())  # Генерация UUID для пользователя
-        
-        # Формируем VLESS ссылку
-        vless_link = (
-            f"vless://{user_uuid}@{SERVER_IP}:{SERVER_PORT}"
-            f"?type=tcp&security=reality&fp=chrome"
-            f"&pbk={PUBLIC_KEY}&sni={SNI}&sid={SHORT_ID}&path={PATH}#VPN_User"
-        )
-        
-        return vless_link
-    except Exception as e:
-        # Логирование ошибки
-        print(f"Ошибка генерации ссылки: {e}")
-        return None
+# Данные вашего VPN-сервера
+SERVER_ADDRESS = "http://188.227.86.106:31155/vmwblSBJciiBhcA/panel/inbounds"  # Ваш домен или IP
+SERVER_PORT = 443  # Порт сервера
+PROTOCOL_TYPE = "vless://8e87ae3c-a567-4344-9cae-07b085ceca1e@188.227.86.106:443?type=tcp&security=reality&pbk=EK0DL1OIO6JDEAIME2sxcn7HauznNO_IsPDdXpMmxRw&fp=chrome&sni=google.com&sid=4c61c8b9920bb4b4&spx=%2F#1S-1S"  # Можно использовать vless, vmess, trojan и т.д.
 
-# Тестируем
-if __name__ == "__main__":  # Исправлено с name на __name__
-    link = generate_vless_link()
-    if link:
-        print("Ваш VLESS URL: http://188.227.86.106:31155/vmwblSBJciiBhcA/panel/inbounds")
-        print(link)
+# Приём команды /start
+@bot.message_handler(commands=["start"])
+def send_welcome(message):
+    bot.reply_to(
+        message,
+        "👋 Добро пожаловать в VPN-бота!\n\n"
+        "Для получения конфигурации VPN нажмите на команду /get_vpn."
+    )
 
+# Генерируем VPN-конфигурацию
+@bot.message_handler(commands=["get_vpn"])
+def generate_vpn(message):
+    user_id = uuid.uuid4()  # Уникальный UUID для пользователя
+    config_link = f"{PROTOCOL_TYPE}://{user_id}@{SERVER_ADDRESS}:{SERVER_PORT}?encryption=none#VPN-User"
+    
+    bot.reply_to(
+        message,
+        f"🎉 Ваше подключение готово!\n\n"
+        f"Скопируйте ссылку ниже и используйте её в VPN-клиенте:\n"
+        f"```\n{config_link}\n```",
+        parse_mode="Markdown"
+    )
+
+# Запускаем бота
+bot.polling()
 
