@@ -3,7 +3,7 @@ import uuid
 # Укажите параметры VPN-сервера
 SERVER_IP = "188.227.86.106"  # IP-адрес сервера
 SERVER_PORT = 443  # Используемый порт
-PUBLIC_KEY = "EK0DL1OIO6JDEAIME2sxcn7HauznNO_IsPDdXpMmxRw"  # Публичный ключ
+PUBLIC_KEY = "7132417386:AAEcrhVgsPV1ZX6CBvVZAKO7-cv1toBMKCM"  # Публичный ключ
 SNI = "google.com"  # SNI-домен
 SHORT_ID = "4c61c8b9920bb4b4"  # Краткий идентификатор (Short ID)
 PATH = "/"  # Путь подключения
@@ -11,7 +11,7 @@ PATH = "/"  # Путь подключения
 def generate_vless_link():
     """Функция для генерации корректной VLESS ссылки"""
     try:
-        user_uuid = uuid.uuid4()  # Генерация UUID для пользователя
+        user_uuid = str(uuid.uuid4())  # Генерация UUID для пользователя
         
         # Формируем VLESS ссылку
         vless_link = (
@@ -27,32 +27,10 @@ def generate_vless_link():
         return None
 
 # Тестируем
-if __name__ == "__main__":
+if __name__ == "__main__":  # Исправлено с name на __name__
     link = generate_vless_link()
     if link:
-        print("Ваш VLESS URL:")
+        print("Ваш VLESS URL: http://188.227.86.106:31155/vmwblSBJciiBhcA/panel/inbounds")
         print(link)
 
-
-{
-       "api": {
-           "services": ["HandlerService", "StatsService"],
-           "tag": "api"
-       },
-       "log": {
-           "access": "/var/log/xray/access.log",
-           "error": "/var/log/xray/error.log",
-           "loglevel": "warning"
-       },
-       "routing": {
-           "rules": [
-               {
-                   "type": "field",
-                   "inboundTag": ["api"],
-                   "outboundTag": "api"
-               }
-           ]
-       }
-   }
-   
 
